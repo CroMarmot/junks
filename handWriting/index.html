@@ -1,0 +1,178 @@
+﻿<!doctype html>
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Ryan 画板demo</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+	<style>
+	.demo{
+	width:20px;
+	height:20px;
+	}
+	</style>
+</head>
+<body style="overflow:overlay;">
+	<div id="color">
+		请选择画笔颜色：
+		<div class="r_draw demo" value="#000000" style="background: #000000;display:inline-block"></div>
+		<div class="r_draw demo" value="#FF0000" style="background: #FF0000;display:inline-block"></div>
+		<div class="r_draw demo" value="#80FF00" style="background: #80FF00;display:inline-block"></div>
+		<div class="r_draw demo" value="#00FFFF" style="background: #00FFFF;display:inline-block"></div>
+		<div class="r_draw demo" value="#808080" style="background: #808080;display:inline-block"></div>
+		<div class="r_draw demo" value="#FF8000" style="background: #FF8000;display:inline-block"></div>
+		<div class="r_draw demo" value="#408080" style="background: #408080;display:inline-block"></div>
+		<div class="r_draw demo" value="#8000FF" style="background: #8000FF;display:inline-block"></div>
+		<div class="r_draw demo" value="#CCCC00" style="background: #CCCC00;display:inline-block"></div>
+	</div>
+	<input type="button" value="clear" class="demoClear" />
+	<div style="width:80%;height:500px;margin:0 auto;border:3px gray solid">
+		<canvas class="demoCanvas">您的浏览器不支持 canvas 标签</canvas>
+	</div>
+	<div class="getpicbase64" style="text-align:center;margin:1px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+		<p>适用浏览器：360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗. 不支持IE8及以下浏览器。</p>
+	</div>
+<script src="jquery-2.1.3.min.js"></script>
+<script>
+'use strict';
+function R_handwriting(){ 
+	this.canvas=null;
+	this.ctx=null;
+	this.color=null;
+	this.lineWidth=5;
+	this.isMouseDown=false;
+	this.lastLoc={x:0,y:0};
+	
+	//api
+	this.init=function(){
+		this.canvas=null;
+		this.color='#000000';
+		this.lineWidth=5;
+		this.isMouseDown=false;
+		this.lastLoc = {x:0,y:0};
+	};
+	this.bind_canvas=function(canvasPath){
+		this.canvas=$(canvasPath)[0];
+		this.ctx=this.canvas.getContext("2d");
+		this.freshWH();
+		this.ctx.lineWidth = this.lineWidth;
+		this.bindOp();
+		return "this.bind_canvas=function(canvasPath)";
+	}
+	this.bind_colorselect=function(colorPath){
+		$(colorPath).on('click',this,function(e){
+			var bindObj=e.data;
+			console.log($(this).attr('value'));
+			bindObj.color = $(this).attr('value');
+			bindObj.ctx.strokeStyle=bindObj.color;
+		});
+	}
+	this.bind_clear=function(clearPath){
+		$(clearPath).on('click',this,function(e){
+			var bindObj=e.data;
+			bindObj.ctx.clearRect(0,0,bindObj.canvas.width,bindObj.canvas.height);
+		});
+	}
+	this.picbase64=function(){
+		return this.canvas.toDataURL();
+	}
+	
+	this.freshWH=function(){
+		//调整大小 根据父元素 缩放
+		$(this.canvas).attr('style',"width:100%;height:100%;");
+		//调整像素
+		this.canvas.width=$(this.canvas).width();
+		this.canvas.height=$(this.canvas).height();
+	}
+	//draw control	
+	this.beginStroke=function(point){
+		this.isMouseDown = true;
+		this.lastLoc = this.windowToCanvas(point.x,point.y);
+	}
+	this.endStroke=function(){
+		this.isMouseDown = false;
+	}
+	
+	this.moveStroke=function(point){
+		var curLoc = this.windowToCanvas(point.x, point.y);
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.lastLoc.x,this.lastLoc.y);
+		this.ctx.lineTo(curLoc.x,curLoc.y);
+		this.ctx.lineCap = 'round';
+		this.ctx.stroke();
+		this.lastLoc = curLoc;
+	}
+	
+	//绑定 用户操作事件
+	this.bindOp=function(){
+		//鼠标触发事件
+		$(this.canvas).on('mousedown',this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			bindObj.beginStroke({x: e.clientX,y: e.clientY});
+		});
+
+		
+		$(this.canvas).on('mouseup',this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			bindObj.endStroke();
+		});
+
+		
+		$(this.canvas).on('mouseout',this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			bindObj.endStroke();
+		});
+		
+		
+		$(this.canvas).on('mousemove',this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			if(bindObj.isMouseDown){
+				bindObj.moveStroke({x: e.clientX,y: e.clientY});
+			}
+		});
+
+		//屏幕触控事件
+		$(this.canvas).on("touchstart",this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			var touch = e.originalEvent.targetTouches[0];
+			console.log(touch);
+			bindObj.beginStroke({x:touch.clientX,y:touch.clientY});
+		})
+
+		$(this.canvas).on("touchmove",this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			if(bindObj.isMouseDown){
+				var touch = e.originalEvent.targetTouches[0];
+				bindObj.moveStroke({x:touch.clientX ,y:touch.clientY});
+			}
+		})
+
+		$(this.canvas).on("touchend",this,function(e){
+			var bindObj=e.data;
+			e.preventDefault();
+			bindObj.endStroke();
+		})
+	}
+	this.windowToCanvas=function(x,y){
+		var bbox = this.canvas.getBoundingClientRect();
+		return { x:x-Math.round(bbox.left),y:y-Math.round(bbox.top)};
+	}
+}
+(function demo(){
+	var demoVar=new R_handwriting();
+	demoVar.init();
+	demoVar.bind_canvas('.demoCanvas');
+	demoVar.bind_colorselect('.r_draw.demo');
+	demoVar.bind_clear('.demoClear');
+	$('.getpicbase64').on('click',function(){alert(demoVar.picbase64());})
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html ng-app="swda">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="index.js"></script>
+    <link href="index.css" rel="stylesheet" media="screen" />
+  </head>
+  <body ng-controller="swdaCtrl">
+    <div>
+      <h1>{{date}}</h1>
+      <table border="1">
+        <tr>
+          <th>Time</th>
+          <th>Msg</th>
+          <th>Add</th>
+        </tr>
+        <tr>
+          <td>
+            <input type="text" placeholder="input time here" ng-model="time">
+          </td>
+          <td>
+            <input type="text" placeholder="input message here" ng-model="msg">
+          </td>
+          <td class="buttoncol">
+            <button ng-click="onAddClick()">+</div>
+          </td>
+        </tr>
+      </table>
+      </div>
+      <div>
+        <table border="1">
+          <tr>
+            <th>Time</th>
+            <th>Msg</th>
+            <th>LeftTime</th>
+            <th>Remove</th>
+          </tr>
+          <tr ng-repeat="(index,item) in tasklist track by $index">
+            <td>
+              {{item.t}} 
+            </td>
+            <td>
+              {{item.m}}
+            </td>
+            <td style="text-align:right;">
+              {{item.lefttime}}
+            </td>
+            <td class="buttoncol">
+              <button ng-click="onRemoveClick(index)">-</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="comment">
+        <button ng-click="onCheckNotificationAllowedClick()" class="checkna">Check Notification Allowed?</button><br/>
+        Now support: <br/>
+        'YYYY-MM-DD' √<br/>
+        'YYYY-MM-DD HH:MM' √<br/>
+        'HH:MM' √<br/>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">`Date` documents</a><br/>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/notification">`Notification` documents</a><br/>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage">`LocalStorage` documents</a>
+      </div>
+  </body>
+</html>

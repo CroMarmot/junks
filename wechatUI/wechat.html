@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>wechattt</title>
+<style>
+html,body{
+	margin: 0px;
+	width:100%;
+	height:100%;
+	background:green;
+	min-width: 720px;
+}
+#divmain{
+	width:360px;
+	height:640px;
+	position:relative;
+	float:left;
+	/*
+	background:url('bkg.jpg');
+	background-size: 100% auto;
+    background-repeat: no-repeat;*/
+}
+#divmain>div{
+	width:100%;
+	position:relative;
+}
+#imgdiv{
+	position:absolute;
+	left:0px;
+	top:0px;
+	height:640px;
+}
+#sysmenu{
+	height: 24px;
+    background: rgba(0, 253, 255, 0);
+}
+#wxmenu{
+	height: 48px;
+}
+#text{
+	height: 520px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+	background: #EBEBEB;
+}
+#input{
+	height: 48px;
+}
+.lefticon {
+    height: 100%;
+    width: 50px;
+    background: rgba(0,0,0,0);
+	position:relative;
+	float:left;
+}
+.seconddiv {
+    height: 100%;
+    width: 260px;
+    background: rgba(0,0,255,0);
+	position:relative;
+	float:left;
+}
+.righticon {
+    height: 100%;
+    width: 50px;
+    background: rgba(0,255,0,0);
+	position:relative;
+	float:left;
+}
+.tlk {
+	width: 100%;
+	min-height: 52px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.debug {
+    width: 100%;
+    height: 16px;
+    box-sizing: border-box;
+    background: rgba(255, 0, 0, 0.27);
+}
+img.tlk-img {
+	width: 41px;
+    height: 41px;
+    margin: 5px 8px;
+    background: rgba(255, 0, 0, 0);
+}
+.tlk-txt {
+	display: inline-block;
+    margin: 6px 2px;
+    padding: 10px 7px;
+    font-family: 'ºÚÌå','YouYuan';
+    max-width: 218px;
+	border-radius: 5px;
+}
+.tlkl .tlk-img {
+    float: left;
+	background: url("head1.jpg");
+    background-size: cover;
+}
+.tlkr .tlk-img {
+    float: right;
+	background: url("head0.jpg");
+    background-size: cover;
+}
+.tlkl .tlk-txt {
+    float: left;
+	background: rgb(253, 253, 253);
+	line-height: 20px;
+	border: 1px #DBDBDB solid;
+    border-left: none;
+}
+.tlkr .tlk-txt {
+    float: right;
+	background: rgb(177, 233, 100);
+    line-height: 20px;
+	border: 1px #9BC164 solid;
+    border-right: none;
+}
+/*control part*/
+#control {
+    float: left;
+    position: relative;
+	width: 360px;
+	height:640px;
+}
+</style>
+<script src="jquery-2.1.3.min.js"></script>
+</head>
+<body>
+<div id="divmain">
+	<!-- 360x640 -->
+	<!-- <img id="imgdiv" src="bkg1.jpg"></img> <img id="imgdiv"></img> -->
+	<img id="imgdiv" src="bkg1.jpg"></img>
+	<div id="sysmenu"></div>
+	<div id="wxmenu">
+		<div class="lefticon"></div>
+		<div class="seconddiv"></div>
+		<div class="righticon"></div>
+	</div>
+	<div id="content">
+		<div id="text">
+			<!--<div class="debug"></div>-->
+		</div>
+		<div id="input">
+			<div class="lefticon"></div>
+			<div class="seconddiv"></div>
+			<div class="righticon"></div>
+		</div>
+	</div>
+</div>
+
+<div id="control">
+<textarea id="txta"></textarea>
+<div style="text-align: center;"> 
+	<button class="bt-left">Left</button>
+	<button class="bt-right">Right</button>
+</div>
+</div>
+<div id="model" style="display:none;">
+	<div class="m1">
+		<div class="tlk tlkl">
+			<img class="tlk-img"></img>
+			<div class="tlk-txt"></div>
+		</div>
+	</div>
+	<div class="m2">
+		<div class="tlk tlkr">
+			<img class="tlk-img"></img>
+			<div class="tlk-txt"></div>
+		</div>
+	</div>
+</div>
+
+<script>
+	"use strict";
+	$('.bt-left').bind("click",function(){
+		if($('#txta').val()=="")
+			return ;
+		$('#model .m1 .tlk-txt').text($('#txta').val());
+		$('#txta').val("");
+		$('#text').append(
+			$(
+			$('#model .m1').html()
+			)
+		);
+	});
+	
+	$('.bt-right').bind("click",function(){
+		if($('#txta').val()=="")
+			return ;
+		$('#model .m2 .tlk-txt').text($('#txta').val());
+		$('#txta').val("");
+		$('#text').append(
+			$(
+			$('#model .m2').html()
+			)
+		);
+	});
+</script>
+
+</body>
+</html>

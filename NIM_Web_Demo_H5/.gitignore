@@ -1,0 +1,8 @@
+# Dependency directories
+node_modules
+dist/css
+dist/js
+.idea
+*.sublime*
+*.log*
+*.lock
